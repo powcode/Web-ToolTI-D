@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sudoku</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="heading">
+        <h1>Sudoku</h1>
+      </div>
+      <div class="sudoku"></div>
+      <div class="generate-sudoku">
+        <input type="button" value="Generate Random" onclick="generateRandomSudoku()" />
+      </div>
+    </div>
+
+    <script>
+      // Membuat grid Sudoku
+      const sudokuContainer = document.querySelector(".sudoku");
+      for (let i = 0; i < 81; i++) {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.classList.add("sudoku-cell");
+        sudokuContainer.appendChild(input);
+      }
+
+      function generateRandomSudoku() {
+        const cells = document.querySelectorAll(".sudoku-cell");
+
+        cells.forEach((cell) => {
+          cell.value = "";
+        });
+
+        const jumlahElemen = 30;
+        let terisi = 0;
+
+        //Cek Baris
+        function isValid(row, col, value) {
+          for (let i = 0; i < 9; i++) {
+            const cellIndex = row * 9 + i;
+            if (cells[cellIndex].value == value) {
+              return false; // Angka sudah ada di baris
+            }
+          }
+
+          // Cek Kolom
+          for (let i = 0; i < 9; i++) {
+            const cellIndex = i * 9 + col;
+            if (cells[cellIndex].value == value) {
+              return false;
+            }
+          }
+
+          // Cek 3x3
+          const startRow = Math.floor(row / 3) * 3;
+          const startCol = Math.floor(col / 3) * 3;
+          for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+              const cellIndex = (startRow + i) * 9 + (startCol + j);
+              if (cells[cellIndex].value == value) {
+                return false;
+              }
+            }
+          }
+          //Jika input sudah valid
+          return true;
+        }
+
+        while (terisi < jumlahElemen) {
+          // Pilih kotak acak
+          const randomIndex = Math.floor(Math.random() * 81);
+          const randomCell = cells[randomIndex];
+
+          // Menentukan baris dan kolom
+          const row = Math.floor(randomIndex / 9);
+          const col = randomIndex % 9;
+
+          // Pilih angka acak 1-9
+          const randomValue = Math.floor(Math.random() * 9) + 1;
+
+          //Validasi Kotak
+          if (!randomCell.value && isValid(row, col, randomValue)) {
+            randomCell.value = randomValue;
+            terisi++;
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
